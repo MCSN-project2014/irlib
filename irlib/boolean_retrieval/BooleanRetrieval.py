@@ -38,7 +38,7 @@ class InvertedIndex:
         :return: a list of all terms appear in all the documents.
         """
         set_terms = set()
-        for docID, lterms in self.dict_docs_terms.iteritems():
+        for docID, lterms in self.dict_docs_terms.items():
             for term in lterms:
                 set_terms.add(term)
         return list(set_terms)
@@ -47,7 +47,7 @@ class InvertedIndex:
     def index(self, lterms):
         inverted_list = {k: [] for k in lterms}
         for term in lterms:
-            for docID, doc_terms in self.dict_docs_terms.iteritems():
+            for docID, doc_terms in self.dict_docs_terms.items():
                 if term in doc_terms and docID not in inverted_list[term]:
                     inverted_list[term].append(docID)
         return inverted_list
@@ -76,9 +76,9 @@ class InvertedIndex:
                     pB += 1
         return solution
 
-    def intersec_not(self, termA, termB):
+    def intersec_and_not(self, termA, termB):
         """
-        Intersec two terms return the list of Documents wher occur termA AND NOT termB
+        Intersec two terms return the list of Documents where occurs termA AND NOT termB
         :param termA:
         :param termB:
         :return: list of documents
@@ -93,14 +93,15 @@ class InvertedIndex:
             if ldocA[pA] == ldocB[pB]:
                 pA += 1
                 pB += 1
-                if pB >= len(ldocB) and pA < len(ldocA):
-                    solution.append(ldocA[pA])
             else:
                 if ldocA[pA] < ldocB[pB]:
                     solution.append(ldocA[pA])
                     pA += 1
                 else:
                     pB += 1
+        # list pA or list pB are terminated
+        if pA < len(ldocA):
+            solution += ldocA[pA:] # all the elements after, because list termB is finished
         return solution
 
 
@@ -110,16 +111,3 @@ class InvertedIndex:
 
 
 
-
-
-doc0 = "new home sales top forecasts"
-doc1 = "home sales rise in july"
-doc2 = "increase in home sales in july"
-doc3 = "july new home sales rise"
-docs = [doc0, doc1, doc2, doc3]
-
-p = InvertedIndex(docs)
-
-#print(p.intersect('home','july'))
-
-print(p.intersec_not('rise','in'))
